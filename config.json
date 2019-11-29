@@ -1,4 +1,4 @@
-﻿{
-    "connectionString": "mongodb://localhost/node-mongo-registration-login-api",
-    "secret": "THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING"
+﻿﻿{
+    "connectionString": "mongodb+srv://interview:welcome2byteridge@byteridge-hdrl6.mongodb.net/interview",
+    "secret": "JBJYBJ23jkj232kALKMLAK"
 }

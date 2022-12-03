@@ -4,8 +4,8 @@ const app = express();
 const cors = require('cors');
 const multer = require('multer');
 const bodyParser = require('body-parser');
-const jwt = require('_helpers/jwt');
 const errorHandler = require('_helpers/error-handler');
+const jwt = require('_helpers/jwt');
 
 const upload = multer()
 

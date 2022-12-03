@@ -1,12 +1,13 @@
 ﻿const express = require('express');
 const router = express.Router();
 const userService = require('./user.service');
+const jwt = require('../_helpers/jwt');
 
 // routes
 router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.get('/', getAll);
-router.get('/audit', auditUser);
+router.get('/audit', checkUser, auditUser);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
 router.put('/:id', update);
@@ -34,6 +35,11 @@ function getAll(req, res, next) {
         .then(users => res.json(users))
         .catch(err => next(err));
 }
+
+function checkUser(req, res, next) {
+    if (!req.role) return res.sendStatus(401);
+    next();
+  }
 
 function auditUser(req, res, next){
     userService.auditUser().then(users => {

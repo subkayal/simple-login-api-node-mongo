@@ -21,9 +21,6 @@ async function isRevoked(req, payload, done) {
     if (!user) {
         return done(null, true);
     }
-    if(user['role'] !== 'AUDITOR'){
-        return done(null, true);
-    }
-    req.role = 'AUDITOR'
+    req.role = user.role
    done();
 };

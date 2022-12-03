@@ -37,7 +37,8 @@ function getAll(req, res, next) {
 }
 
 function checkUser(req, res, next) {
-    if (!req.role) return res.sendStatus(401);
+    console.log(req.role);
+    if (req.role !== 'AUDITOR') return res.json({'status': 401, message: 'User Unauthorized'});
     next();
   }
 

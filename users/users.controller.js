@@ -6,22 +6,26 @@ const userService = require('./user.service');
 router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.get('/', getAll);
+router.get('/audit', auditUser);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
 router.put('/:id', update);
 router.delete('/:id', _delete);
 
+
 module.exports = router;
 
 function authenticate(req, res, next) {
+    req.body['ip'] = req.socket.remoteAddress;
     userService.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));
 }
 
 function register(req, res, next) {
+    req.body['ip'] = req.socket.remoteAddress;
     userService.create(req.body)
-        .then(() => res.json({}))
+        .then(() => res.json({'success': true, message: 'Successfully register'}))
         .catch(err => next(err));
 }
 
@@ -29,6 +33,12 @@ function getAll(req, res, next) {
     userService.getAll()
         .then(users => res.json(users))
         .catch(err => next(err));
+}
+
+function auditUser(req, res, next){
+    userService.auditUser().then(users => {
+        res.json(users)
+    }).catch(err => next(err))
 }
 
 function getCurrent(req, res, next) {

@@ -10,14 +10,18 @@ module.exports = {
     getById,
     create,
     update,
+    auditUser,
     delete: _delete
 };
 
-async function authenticate({ username, password }) {
+async function authenticate({ username, password, ip }) {
     const user = await User.findOne({ username });
     if (user && bcrypt.compareSync(password, user.hash)) {
-        const { hash, ...userWithoutHash } = user.toObject();
         const token = jwt.sign({ sub: user.id }, config.secret);
+        user.ip = ip;
+        user.loginDate = Date.now();
+        await user.save();
+        const { hash, ...userWithoutHash } = user.toObject();
         return {
             ...userWithoutHash,
             token
@@ -29,12 +33,16 @@ async function getAll() {
     return await User.find().select('-hash');
 }
 
+async function auditUser() {
+    return await User.find({'role': 'USER'}).select('username ip loginDate logoutDate');
+}
+
 async function getById(id) {
     return await User.findById(id).select('-hash');
 }
 
 async function create(userParam) {
-    // validate
+
     if (await User.findOne({ username: userParam.username })) {
         throw 'Username "' + userParam.username + '" is already taken';
     }
@@ -45,7 +53,6 @@ async function create(userParam) {
     if (userParam.password) {
         user.hash = bcrypt.hashSync(userParam.password, 10);
     }
-
     // save user
     await user.save();
 }
